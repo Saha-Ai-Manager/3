@@ -95,7 +95,7 @@ function startNewChat() {
   document.getElementById("chatContainer").innerHTML = "";
   Swal.fire({
     icon: "info",
-    title: "새 채팅이 시작되었습니다",
+    title: "새 채팅이 시작되었어요",
   });
 }
 
@@ -104,6 +104,6 @@ function openSettings() {
   Swal.fire({
     icon: "info",
     title: "설정",
-    text: "설정 기능이 준비 중입니다.",
+    text: "설정 기능이 준비 중이예요.",
   });
 }
