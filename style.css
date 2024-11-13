@@ -13,7 +13,6 @@
   filter: blur(30px);
 }
 
-/* 오로라 효과 애니메이션 */
 @keyframes aurora {
   0% {
     background-position: 0% 50%;
@@ -26,7 +25,6 @@
   }
 }
 
-/* iMessage 스타일 애니메이션 */
 @keyframes pop-up {
   0% {
     transform: scale(0.95);

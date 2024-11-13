@@ -1,8 +1,6 @@
-// 초기 모델과 Grounding 설정 상태
 let currentModel = "gemini-1.5-pro-002";
 let isGroundingEnabled = false;
 
-// 메시지 전송 함수
 async function sendMessage() {
   const userMessage = document.getElementById("userInput").value;
 
@@ -44,18 +42,26 @@ async function sendMessage() {
   document.getElementById("userInput").value = "";
 }
 
-// 모델 선택 시 선택한 모델로 전환
+// 모델 선택 드롭다운 토글
+function toggleModelSelect() {
+  const modelSelect = document.getElementById("modelSelect");
+  modelSelect.classList.toggle("hidden");
+}
+
+// 모델 변경
 function changeModel() {
   currentModel = document.getElementById("modelSelect").value;
+  toggleModelSelect();
 }
 
 // Grounding 설정 토글
 function toggleGrounding() {
   isGroundingEnabled = !isGroundingEnabled;
-  document.getElementById("groundingToggle").textContent = `Grounding: ${isGroundingEnabled ? "ON" : "OFF"}`;
+  const groundingIcon = document.querySelector(".fa-cogs");
+  groundingIcon.style.color = isGroundingEnabled ? "green" : "indigo";
 }
 
-// iMessage 스타일의 대화 버블 추가
+// 대화 버블 추가 함수
 function addMessageBubble(message, sender) {
   const chatContainer = document.getElementById("chatContainer");
   const bubble = document.createElement("div");
