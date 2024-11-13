@@ -1,4 +1,9 @@
-/* 오로라 효과 배경 스타일 */
+/* Sidebar transition */
+#sidebar {
+  transition: transform 0.3s ease;
+}
+
+/* Aurora Background */
 .aurora-background {
   position: absolute;
   top: 0;
@@ -13,7 +18,6 @@
   filter: blur(30px);
 }
 
-/* 오로라 효과 애니메이션 */
 @keyframes aurora {
   0% {
     background-position: 0% 50%;
@@ -26,18 +30,21 @@
   }
 }
 
-/* iMessage 스타일 애니메이션 */
-@keyframes pop-up {
-  0% {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.ios-bottom-bar {
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
-.animate-pop-up {
-  animation: pop-up 0.2s ease-out;
+.ios-textarea {
+  font-size: 16px;
+  padding: 10px;
+}
+
+.ios-send-button {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.ios-dropdown, .ios-toggle {
+  font-size: 14px;
 }

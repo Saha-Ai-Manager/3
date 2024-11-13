@@ -1,10 +1,29 @@
-// 초기 모델과 Grounding 설정 상태
+// Initial model and grounding state
 let currentModel = "gemini-1.5-pro-002";
 let isGroundingEnabled = false;
 
-// 메시지 전송 함수
+// Toggle sidebar visibility
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("-translate-x-full");
+}
+
+// Add message bubble with animation
+function addMessageBubble(message, sender) {
+  const chatContainer = document.getElementById("chatContainer");
+  const bubble = document.createElement("div");
+  bubble.className = `message-bubble ${sender === "user" ? "user-bubble" : "ai-bubble"}`;
+  bubble.textContent = message;
+  chatContainer.appendChild(bubble);
+
+  setTimeout(() => {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }, 50);
+}
+
+// Message sending function
 async function sendMessage() {
-  const userMessage = document.getElementById("userInput").value;
+  const userMessage = document.getElementById("userInput").value.trim();
 
   if (!userMessage) {
     Swal.fire({
@@ -36,7 +55,7 @@ async function sendMessage() {
     Swal.fire({
       icon: "error",
       title: "에러 발생",
-      text: "서버와의 통신 중 문제가 발생했습니다.",
+      text: "서버와의 통신 중 문제가 발생했어요.",
     });
     console.error("Error:", error);
   }
@@ -44,28 +63,31 @@ async function sendMessage() {
   document.getElementById("userInput").value = "";
 }
 
-// 모델 선택 시 선택한 모델로 전환
+// Change model function
 function changeModel() {
   currentModel = document.getElementById("modelSelect").value;
 }
 
-// Grounding 설정 토글
+// Grounding toggle function
 function toggleGrounding() {
   isGroundingEnabled = !isGroundingEnabled;
   document.getElementById("groundingToggle").textContent = `Grounding: ${isGroundingEnabled ? "ON" : "OFF"}`;
 }
 
-// iMessage 스타일의 대화 버블 추가
-function addMessageBubble(message, sender) {
-  const chatContainer = document.getElementById("chatContainer");
-  const bubble = document.createElement("div");
+// Start new chat
+function startNewChat() {
+  document.getElementById("chatContainer").innerHTML = "";
+  Swal.fire({
+    icon: "info",
+    title: "새 채팅이 시작되었습니다",
+  });
+}
 
-  bubble.className = sender === "user" 
-    ? "bg-blue-500 text-white p-3 rounded-xl rounded-br-none self-end max-w-xs animate-pop-up"
-    : "bg-gray-300 text-gray-900 p-3 rounded-xl rounded-bl-none self-start max-w-xs animate-pop-up";
-  bubble.classList.add("mb-2", "shadow-sm");
-  bubble.textContent = message;
-
-  chatContainer.appendChild(bubble);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+// Open settings
+function openSettings() {
+  Swal.fire({
+    icon: "info",
+    title: "설정",
+    text: "설정 기능이 준비 중입니다.",
+  });
 }
