@@ -1,9 +1,7 @@
-/* Sidebar transition */
-#sidebar {
-  transition: transform 0.3s ease;
+body {
+  font-family: Arial, sans-serif;
 }
 
-/* Aurora Background */
 .aurora-background {
   position: absolute;
   top: 0;
@@ -19,46 +17,27 @@
 }
 
 @keyframes aurora {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.ios-bottom-bar {
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-}
-
-.ios-textarea {
-  font-size: 16px;
+.user-bubble {
+  background-color: #1e3a8a;
+  color: white;
   padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  align-self: flex-end;
+  max-width: 70%;
 }
 
-.ios-send-button {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.ios-dropdown, .ios-toggle {
-  font-size: 14px;
-}
-
-/* Bounce 효과를 위한 스타일 */
-.bounce-scroll-container {
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch; /* iOS에서 스크롤 바운스 효과 활성화 */
-  overscroll-behavior-y: contain; /* 스크롤 튕김 제한 */
-  height: 100%; /* 스크롤 높이 설정 */
-}
-
-.bounce-scroll-container:after {
-  content: '';
-  display: block;
-  height: 1px; /* 스크롤 영역을 끝까지 스크롤하도록 가상 높이 추가 */
+.ai-bubble {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  align-self: flex-start;
+  max-width: 70%;
 }
