@@ -46,8 +46,14 @@ async function sendMessage() {
     });
 
     const data = await response.json();
+
+    if (response.status === 429) {  // 429 상태 코드 (쿼터 초과) 처리
+      Swal.fire({ icon: "error", title: "요청 한도 초과", text: "하루 한도를 초과했어요. 잠시 후 다시 시도해주세요." });
+      return;
+    }
+
     if (!data.response || data.response.trim() === "") {
-      Swal.fire({ icon: "warning", title: "AI 응답이 없어요." });
+      Swal.fire({ icon: "warning", title: "AI 응답이 없어요. 하루 한도를 초과 했을 수도 있어요. (response.message.content가 비어 있음)" });
       return;
     }
 
