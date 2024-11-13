@@ -8,7 +8,7 @@ function toggleSidebar() {
   sidebar.classList.toggle("-translate-x-full");
 }
 
-// Add message bubble with animation
+// Add message bubble with animation and scroll bounce
 function addMessageBubble(message, sender) {
   const chatContainer = document.getElementById("chatContainer");
   const bubble = document.createElement("div");
@@ -16,6 +16,22 @@ function addMessageBubble(message, sender) {
   bubble.textContent = message;
   chatContainer.appendChild(bubble);
 
+  // Bounce effect on reaching top or bottom of the scroll
+  chatContainer.addEventListener("scroll", () => {
+    const atTop = chatContainer.scrollTop === 0;
+    const atBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight;
+
+    if (atTop || atBottom) {
+      chatContainer.style.transition = "transform 0.2s";
+      chatContainer.style.transform = "translateY(" + (atTop ? "10px" : "-10px") + ")";
+
+      setTimeout(() => {
+        chatContainer.style.transform = "translateY(0)";
+      }, 150);
+    }
+  });
+
+  // Scroll to the bottom after adding a new message
   setTimeout(() => {
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }, 50);
