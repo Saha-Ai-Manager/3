@@ -37,6 +37,16 @@ async function sendMessage() {
   }
 
   addMessageBubble(userMessage, "user");
+  document.getElementById("userInput").value = "";
+
+  // 로딩 상태 표시
+  Swal.fire({
+    title: '응답을 기다리는 중...',
+    text: '서버에서 응답을 기다리는 중입니다.',
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
 
   try {
     const response = await fetch("http://localhost:3000/ask", {
@@ -45,12 +55,15 @@ async function sendMessage() {
       body: JSON.stringify({ sessionId, message: userMessage, model: currentModel, grounding: isGroundingEnabled }),
     });
 
-    const data = await response.json();
+    // 로딩 상태 종료
+    Swal.close();
 
     if (response.status === 429) {  // 429 상태 코드 (쿼터 초과) 처리
       Swal.fire({ icon: "error", title: "요청 한도 초과", text: "하루 한도를 초과했어요. 잠시 후 다시 시도해주세요." });
       return;
     }
+
+    const data = await response.json();
 
     if (!data.response || data.response.trim() === "") {
       Swal.fire({ icon: "warning", title: "AI 응답이 없어요. 하루 한도를 초과 했을 수도 있어요. (response.message.content가 비어 있음)" });
@@ -58,11 +71,11 @@ async function sendMessage() {
     }
 
     addMessageBubble(data.response, "ai");
+
   } catch (error) {
+    Swal.close();
     Swal.fire({ icon: "error", title: "에러 발생", text: "서버와의 통신 중 문제가 발생했어요." });
   }
-
-  document.getElementById("userInput").value = "";
 }
 
 function addMessageBubble(message, sender) {
