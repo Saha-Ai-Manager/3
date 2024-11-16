@@ -1,88 +1,74 @@
-let sessionId = null;
-let currentModel = "gemini-1.5-pro-002";
-let isGroundingEnabled = false;
-
-async function startNewChat() {
-  const response = await fetch("http://localhost:3000/new-chat", { method: "POST" });
-  const data = await response.json();
-  sessionId = data.sessionId;
-  document.getElementById("chatContainer").innerHTML = "";
-}
-
-function openHistory() {
-  Swal.fire("기록 기능은 준비 중이예요.");
-}
-
-function changeModel() {
-  currentModel = document.getElementById("modelSelect").value;
-}
-
-function toggleGrounding() {
-  isGroundingEnabled = !isGroundingEnabled;
-  document.getElementById("groundingToggle").textContent = `Grounding: ${isGroundingEnabled ? "ON" : "OFF"}`;
-}
-
-function handleKeyPress(event) {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
-  }
-}
-
 async function sendMessage() {
-  const userMessage = document.getElementById("userInput").value;
+  const userInput = document.getElementById("userInput");
+  const modelSelect = document.getElementById("modelSelect");
+  const groundingToggle = document.getElementById("groundingToggle");
+  const userMessage = userInput.value.trim();
+  const selectedModel = modelSelect.value;
+  const groundingEnabled = groundingToggle.checked; // Grounding 상태
+  const chatContainer = document.getElementById("chatContainer");
+
   if (!userMessage) {
-    Swal.fire({ icon: "warning", title: "메시지를 입력해주세요" });
+    Swal.fire({
+      icon: "warning",
+      title: "질문을 입력해주세요",
+      text: "입력창이 비어 있습니다.",
+    });
     return;
   }
 
-  addMessageBubble(userMessage, "user");
-  document.getElementById("userInput").value = "";
-
-  // 로딩 상태 표시
-  Swal.fire({
-    title: '응답을 기다리는 중...',
-    text: '서버에서 응답을 기다리는 중입니다.',
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
+  // 사용자 메시지를 채팅창에 추가
+  appendMessage("user", userMessage);
+  userInput.value = ""; // 입력창 초기화
 
   try {
     const response = await fetch("http://localhost:3000/ask", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId, message: userMessage, model: currentModel, grounding: isGroundingEnabled }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ 
+        message: userMessage, 
+        model: selectedModel,
+        groundingEnabled 
+      }),
     });
 
-    // 로딩 상태 종료
-    Swal.close();
-
-    if (response.status === 429) {  // 429 상태 코드 (쿼터 초과) 처리
-      Swal.fire({ icon: "error", title: "요청 한도 초과", text: "하루 한도를 초과했어요. 잠시 후 다시 시도해주세요." });
-      return;
-    }
-
     const data = await response.json();
+    const aiResponse = data.response || "AI가 응답하지 않았습니다.";
 
-    if (!data.response || data.response.trim() === "") {
-      Swal.fire({ icon: "warning", title: "AI 응답이 없어요. 하루 한도를 초과 했을 수도 있어요. (response.message.content가 비어 있음)" });
-      return;
-    }
-
-    addMessageBubble(data.response, "ai");
+    // AI 응답을 채팅창에 추가
+    appendMessage("ai", aiResponse);
 
   } catch (error) {
-    Swal.close();
-    Swal.fire({ icon: "error", title: "에러 발생", text: "서버와의 통신 중 문제가 발생했어요." });
+    Swal.fire({
+      icon: "error",
+      title: "에러 발생",
+      text: "서버와의 통신 중 문제가 발생했습니다. 다시 시도해 주세요.",
+    });
+    console.error("Error:", error);
   }
 }
 
-function addMessageBubble(message, sender) {
+function appendMessage(sender, message) {
   const chatContainer = document.getElementById("chatContainer");
-  const bubble = document.createElement("div");
-  bubble.className = sender === "user" ? "user-bubble" : "ai-bubble";
-  bubble.textContent = message;
-  chatContainer.appendChild(bubble);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("flex", "items-start", "space-x-4");
+
+  if (sender === "user") {
+    messageElement.innerHTML = `
+      <div class="bg-blue-500 text-white p-3 rounded-lg max-w-sm">
+        ${message}
+      </div>
+    `;
+    messageElement.classList.add("justify-end");
+  } else {
+    messageElement.innerHTML = `
+      <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-sm">
+        ${message}
+      </div>
+    `;
+  }
+
+  chatContainer.appendChild(messageElement);
+  chatContainer.scrollTop = chatContainer.scrollHeight; // 자동 스크롤
 }
